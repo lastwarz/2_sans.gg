@@ -27,9 +27,6 @@
             background-color: #9ADDEF;
             overflow-x:hidden;
         }
-        #header {
-
-        }
         .logo {
             width: 300px;
             position: relative;
@@ -144,12 +141,6 @@
         }
         .positions20 img {
             width: 30px;
-        }
-        #main {
-
-        }
-        .games {
-
         }
         .game {
             width: 1200px;
@@ -572,7 +563,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         // summoner api로 유저 데이터를 가져오는 부분
-        const api키 = "RGAPI-e17ddfd0-1242-4f85-a394-6b1e2adc8b3a"
+        const api키 = "RGAPI-636a2194-3b88-47a6-bfa6-e837efc84a9d"
         let 검색할유저
         let 소환사puuid
         let 소환사id
@@ -676,7 +667,7 @@
             
             // 2. 매치 ID로  매치 검색  - API 호출
             gameAPI = []    
-            for(let i=0;i<=19;i += 1 ) { // 20번 반복
+            for(let i=0;i<매치20개.data.length;i += 1 ) { // 20번 반복
                 gameAPI.push(`https://asia.api.riotgames.com/lol/match/v5/matches/${매치20개.data[i]}?api_key=${api키}`)
             }
 
@@ -693,7 +684,7 @@
             let 게임20KDA = document.querySelector(".game20KDAvs1 span")
 
             // 20개 게임의 데이터를 페이지에 집어넣기
-            for(let k=0; k<=19; k+= 1) {
+            for(let k=0; k<매치20개.data.length; k+= 1) {
                 let 게임 = await axios.get(gameAPI[k])
 
                 console.log(`<${k}, 번 째 게임>`)
@@ -788,30 +779,41 @@
             
                 console.log("리그API 호출")
                 console.log(response)
-                
+                let 솔랭
+                let 큐종류
+                for(let i=0; i < response.data.length; i+=1) {
+                    if(response.data[i].queueType == "RANKED_SOLO_5x5") {
+                        솔랭 = i
+                        if(response.data[솔랭].queueType == "RANKED_SOLO_5x5") {
+                            const 티어이미지 = document.querySelector(".tier img")
+                            티어.textContent = response.data[솔랭].tier + " " + response.data[솔랭].rank
+                            승률.textContent = ((response.data[솔랭].wins / (response.data[솔랭].wins + response.data[솔랭].losses))*100).toFixed(2)
+                            승.textContent = response.data[솔랭].wins
+                            패.textContent = response.data[솔랭].losses
+                            
+                            티어이미지.setAttribute("src", `https://opgg-static.akamaized.net/images/medals_new/${response.data[솔랭].tier}.png?image=q_auto,f_webp,w_144&v=1684436046850`)
+                        }
+                        break
+                    }
+                    else if (response.data[i].queueType != "RANKED_SOLO_5x5") {
+                        const 티어이미지 = document.querySelector(".tier img")
+                        티어.textContent = "Unranked"
+                        티어이미지.setAttribute("src", "https://cdn.dak.gg/lol/images/tier-emblem/2022/provisional.png")
+                        승률.textContent = "0"
+                        승.textContent = "0"
+                        패.textContent = "0"
+                    }
+                    
+                } //for문 끝
                 if (response.data == "") {
-                    const 티어이미지 = document.querySelector(".tier img")
-                    티어.textContent = "Unranked"
-                    티어이미지.setAttribute("src", "https://cdn.dak.gg/lol/images/tier-emblem/2022/provisional.png")
-                    승률.textContent = "0"
-                    승.textContent = "0"
-                    패.textContent = "0"
-                }
-                else {
-                    const 티어이미지 = document.querySelector(".tier img")
-                    티어.textContent = response.data[0].tier + " " + response.data[0].rank
-                    승률.textContent = ((response.data[0].wins / (response.data[0].wins + response.data[0].losses))*100).toFixed(2)
-                    승.textContent = response.data[0].wins
-                    패.textContent = response.data[0].losses
-                    
-                    티어이미지.setAttribute("src", `https://opgg-static.akamaized.net/images/medals_new/${response.data[0].tier}.png?image=q_auto,f_webp,w_144&v=1684436046850`)
-                    
+                        const 티어이미지 = document.querySelector(".tier img")
+                        티어.textContent = "Unranked"
+                        티어이미지.setAttribute("src", "https://cdn.dak.gg/lol/images/tier-emblem/2022/provisional.png")
+                        승률.textContent = "0"
+                        승.textContent = "0"
+                        패.textContent = "0"
                 }
                 const 티어이미지 = document.querySelector(".tier img")
-                
-
-                // 소환사 랭크이미지 변경
-                
             }
         
         async function 게임20개() {
@@ -850,12 +852,12 @@
             // 2. 매치 ID로  매치 검색  - API 호출
             // 누를때마다 api20개 초기화
             gameAPI = []
-            for(let i=0;i<=19;i += 1 ) { // 20번 반복
+            for(let i=0;i<매치20개.data.length;i += 1 ) { // 20번 반복
                 gameAPI.push(`https://asia.api.riotgames.com/lol/match/v5/matches/${매치20개.data[i]}?api_key=${api키}`)
             }
 
             // 20개 게임의 데이터를 페이지에 집어넣기
-            for(let k=0; k<=19; k+= 1) {
+            for(let k=0; k<매치20개.data.length; k+= 1) {
                 let 게임 = await axios.get(gameAPI[k])
 
                 console.log(`<${k}, 번 째 게임>`)
